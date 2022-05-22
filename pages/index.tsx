@@ -1,21 +1,10 @@
 import type { NextPage } from 'next';
-import Link from 'next/link';
-import { Loader } from '../components/Loader';
+import toast from 'react-hot-toast';
 
 const Home: NextPage = () => {
   return (
     <div>
-      <Link
-        prefetch={true}
-        href={{
-          pathname: '/[username]',
-          query: { username: 'mario' }
-        }}
-      >
-        <a>Mario&apos;s profile</a>
-      </Link>
-
-      <Loader show />
+      <button onClick={() => toast.success('Hello, toast!')}>Toast me!</button>
     </div>
   );
 };
