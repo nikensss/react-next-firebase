@@ -1,5 +1,6 @@
 import type { NextPage } from 'next';
 import Link from 'next/link';
+import { Loader } from '../components/Loader';
 
 const Home: NextPage = () => {
   return (
@@ -13,6 +14,8 @@ const Home: NextPage = () => {
       >
         <a>Mario&apos;s profile</a>
       </Link>
+
+      <Loader show />
     </div>
   );
 };
