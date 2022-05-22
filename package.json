@@ -7,8 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "pretty": "prettier --write 'pages/**/*.{ts,tsx}'",
-    "pretty:check": "prettier --check 'pages/**/*.{ts,tsx}'",
+    "pretty": "prettier --write '{pages,components,lib}/**/*.{ts,tsx}'",
+    "pretty:check": "prettier --check '{pages,components,lib}/**/*.{ts,tsx}'",
     "prepare": "husky install"
   },
   "dependencies": {
