@@ -1,11 +1,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { useContext } from 'react';
+import { UserContext } from '../lib/context';
 
 const Navbar = () => {
-  const { user, username } = {
-    user: { photoURL: 'https://logos-download.com/wp-content/uploads/2018/03/Batman_logo_bat.png' },
-    username: 'jake'
-  };
+  const { user, username } = useContext(UserContext);
 
   return (
     <nav className="navbar">
@@ -26,7 +25,7 @@ const Navbar = () => {
             <li>
               <Link href={`/${username}`}>
                 <Image
-                  src={user?.photoURL}
+                  src={user?.photoURL || ''}
                   width="50px"
                   height="50px"
                   alt="user profile picture"

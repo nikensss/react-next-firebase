@@ -1,9 +1,11 @@
 import { signInWithPopup } from 'firebase/auth';
 import { auth, googleAuth } from '../lib/firebase';
 import Image from 'next/image';
+import { useContext } from 'react';
+import { UserContext } from '../lib/context';
 
 const EnterPage = () => {
-  const [user, username] = [null, null];
+  const { user, username } = useContext(UserContext);
 
   // 1. user signed out <SignInButton />
   // 2. user signed in, but missing username <UsernameForm />
