@@ -1,15 +1,17 @@
 import { signInWithPopup } from 'firebase/auth';
-import { auth, googleAuth } from '../lib/firebase';
+import { auth, db, googleAuth } from '../lib/firebase';
 import Image from 'next/image';
-import { useContext } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { UserContext } from '../lib/context';
+import { doc, getDoc, writeBatch } from 'firebase/firestore';
+import debounce from 'lodash.debounce';
 
 const EnterPage = () => {
   const { user, username } = useContext(UserContext);
 
-  // 1. user signed out <SignInButton />
-  // 2. user signed in, but missing username <UsernameForm />
-  // 3. user signed in, has username <SignOutButton />
+  // 1. user signed out -> <SignInButton />
+  // 2. user signed in, but missing username -> <UsernameForm />
+  // 3. user signed in, has username -> <SignOutButton />
   return <main>{!user ? <SignInButton /> : username ? <SignOutButton /> : <UsernameForm />}</main>;
 };
 
@@ -32,5 +34,119 @@ const SignOutButton = () => {
 };
 
 const UsernameForm = () => {
-  return <button>Under construction...</button>;
+  const [formValue, setFormValue] = useState('');
+  const [isValid, setIsValid] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const { user, username } = useContext(UserContext);
+
+  // eslint-disable-next-line
+  const checkUsername = useCallback(
+    debounce(async (username: string): Promise<void> => {
+      try {
+        if (username.length >= 3) {
+          const ref = doc(db, `usernames/${username}`);
+          const snapshot = await getDoc(ref);
+          console.log({ snapshot });
+          console.log('Firestore read executed!', { exists: snapshot.exists() });
+          setIsValid(!snapshot.exists());
+          setLoading(false);
+        }
+      } catch (ex) {
+        console.log(ex);
+      }
+    }, 500),
+    []
+  );
+
+  useEffect(() => {
+    checkUsername(formValue)?.catch(console.error);
+  }, [checkUsername, formValue]);
+
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.toLowerCase();
+    const re = /^(?=[a-zA-Z0-9._]{3,15}$)(?!.*[_.]{2})[^_.].*[^_.]$/;
+
+    if (val.length < 3) {
+      setFormValue(val);
+      setLoading(false);
+      setIsValid(false);
+    }
+
+    if (re.test(val)) {
+      setFormValue(val);
+      setLoading(true);
+      setIsValid(false);
+    }
+  };
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    try {
+      e.preventDefault();
+
+      const userDoc = doc(db, `users/${user?.uid}`);
+      const usernameDoc = doc(db, `usernames/${formValue}`);
+
+      const batch = writeBatch(db);
+      batch.set(userDoc, {
+        username: formValue,
+        photoURL: user?.photoURL,
+        displayName: user?.displayName
+      });
+      batch.set(usernameDoc, { uid: user?.uid });
+
+      await batch.commit();
+    } catch (ex) {
+      console.error(ex);
+    }
+  };
+
+  return username ? (
+    <></>
+  ) : (
+    <section>
+      <h3>Choose username</h3>
+
+      <form action="" onSubmit={onSubmit}>
+        <input
+          type=""
+          name="username"
+          placeholder="username"
+          value={formValue}
+          onChange={onChange}
+        />
+
+        <UsernameMessage username={formValue} isValid={isValid} loading={loading} />
+
+        <button type="submit" className="btn-green" disabled={!isValid}>
+          Choose
+        </button>
+
+        <h3>Debug state</h3>
+        <div>
+          Username: {formValue}
+          <br />
+          Loading: {loading.toString()}
+          <br />
+          Username Valid: {isValid.toString()}
+        </div>
+      </form>
+    </section>
+  );
+};
+
+type FormState = {
+  username: string;
+  isValid: boolean;
+  loading: boolean;
+};
+
+const UsernameMessage = ({ username, isValid, loading }: FormState) => {
+  if (loading) return <p>Checking...</p>;
+
+  if (isValid) return <p className="text-success">{username} is available!</p>;
+
+  if (username && !isValid) return <p className="text-danger">That username is taken!</p>;
+
+  return <p></p>;
 };
