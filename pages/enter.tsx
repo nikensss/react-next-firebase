@@ -40,28 +40,21 @@ const UsernameForm = () => {
 
   const { user, username } = useContext(UserContext);
 
-  // eslint-disable-next-line
-  const checkUsername = useCallback(
-    debounce(async (username: string): Promise<void> => {
-      try {
-        if (username.length >= 3) {
-          const ref = doc(db, `usernames/${username}`);
-          const snapshot = await getDoc(ref);
-          console.log({ snapshot });
-          console.log('Firestore read executed!', { exists: snapshot.exists() });
-          setIsValid(!snapshot.exists());
-          setLoading(false);
-        }
-      } catch (ex) {
-        console.log(ex);
-      }
-    }, 500),
-    []
-  );
+  const debouncedCheck = debounce(async (username: string): Promise<void> => {
+    if (username.length < 3) return;
 
-  useEffect(() => {
-    checkUsername(formValue)?.catch(console.error);
-  }, [checkUsername, formValue]);
+    const ref = doc(db, `usernames/${username}`);
+    const snapshot = await getDoc(ref);
+    console.log('Firestore read executed!');
+    setIsValid(!snapshot.exists());
+    setLoading(false);
+  }, 500);
+
+  const checkUsername = useCallback((username: string) => {
+    debouncedCheck(username)?.catch(console.error);
+  }, []);
+
+  useEffect(() => checkUsername(formValue), [formValue]);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value.toLowerCase();
