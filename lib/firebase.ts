@@ -1,4 +1,4 @@
-import { initializeApp, getApp } from 'firebase/app';
+import { getApp, initializeApp } from 'firebase/app';
 // these imports indicate 'next' to bundle them
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import {
@@ -59,7 +59,7 @@ export const getUserPosts = async (userDoc: QueryDocumentSnapshot<User>): Promis
   );
 };
 
-export const postToJSON = (doc: QueryDocumentSnapshot<PostFirestore>) => {
+export const postToJSON = (doc: QueryDocumentSnapshot<PostFirestore>): PostJSON => {
   const data = doc.data();
   if (!data) throw new Error('No data available');
 

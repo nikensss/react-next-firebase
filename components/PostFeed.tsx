@@ -27,7 +27,7 @@ export interface PostItemProps {
 }
 
 export interface PostFeedProps {
-  admin: boolean;
+  admin?: boolean;
   posts: PostJSON[];
 }
 
