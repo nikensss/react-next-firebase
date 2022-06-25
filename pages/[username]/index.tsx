@@ -21,6 +21,7 @@ export interface UserProfilePageProps {
   user: User;
   posts: PostJSON[];
 }
+
 const UserProfilePage = ({ user, posts }: UserProfilePageProps) => {
   return (
     <main>

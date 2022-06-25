@@ -53,7 +53,7 @@ const PostItem = ({ post, admin = false }: PostItemProps) => {
         <span>
           {wordCount} words, {minutesToRead} minutes to read
         </span>
-        <span>💜 {post.heartCount} likes</span>
+        <span className="push-left">💜 {post.heartCount} likes</span>
       </footer>
     </div>
   );
