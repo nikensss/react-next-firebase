@@ -3,6 +3,10 @@ import { getApp, initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import {
   collection,
+  doc,
+  DocumentReference,
+  DocumentSnapshot,
+  getDoc,
   getDocs,
   getFirestore,
   limit,
@@ -46,6 +50,16 @@ export const getUserWithUsername = async (
   return (await getDocs(userQuery)).docs[0] as QueryDocumentSnapshot<User>;
 };
 
+export const getPostPath = (user: DocumentSnapshot<User>, slug: string): string => {
+  return doc(db, 'users', user.id, 'posts', slug).path;
+};
+
+export const getPost = async (path: string): Promise<PostJSON> => {
+  const post = doc(db, path);
+
+  return postToJSON(await getDoc(post as DocumentReference<PostFirestore>));
+};
+
 export const getUserPosts = async (userDoc: QueryDocumentSnapshot<User>): Promise<PostJSON[]> => {
   const postsQuery = query(
     collection(db, 'users', userDoc.id, 'posts'),
@@ -59,7 +73,7 @@ export const getUserPosts = async (userDoc: QueryDocumentSnapshot<User>): Promis
   );
 };
 
-export const postToJSON = (doc: QueryDocumentSnapshot<PostFirestore>): PostJSON => {
+export const postToJSON = (doc: DocumentSnapshot<PostFirestore>): PostJSON => {
   const data = doc.data();
   if (!data) throw new Error('No data available');
 
