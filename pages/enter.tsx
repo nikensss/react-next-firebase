@@ -101,13 +101,7 @@ const UsernameForm = () => {
       <h3>Choose username</h3>
 
       <form action="" onSubmit={onSubmit}>
-        <input
-          type=""
-          name="username"
-          placeholder="username"
-          value={formValue}
-          onChange={onChange}
-        />
+        <input type="" name="username" placeholder="username" value={formValue} onChange={onChange} />
 
         <UsernameMessage username={formValue} isValid={isValid} loading={loading} />
 

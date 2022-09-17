@@ -43,9 +43,7 @@ export const db = getFirestore(app);
 
 export const storage = getStorage(app);
 
-export const getUserWithUsername = async (
-  username: string
-): Promise<QueryDocumentSnapshot<User>> => {
+export const getUserWithUsername = async (username: string): Promise<QueryDocumentSnapshot<User>> => {
   const userQuery = query(collection(db, 'users'), where('username', '==', username), limit(1));
   return (await getDocs(userQuery)).docs[0] as QueryDocumentSnapshot<User>;
 };
@@ -68,9 +66,7 @@ export const getUserPosts = async (userDoc: QueryDocumentSnapshot<User>): Promis
     limit(5)
   );
 
-  return ((await getDocs(postsQuery)).docs as QueryDocumentSnapshot<PostFirestore>[]).map(
-    postToJSON
-  );
+  return ((await getDocs(postsQuery)).docs as QueryDocumentSnapshot<PostFirestore>[]).map(postToJSON);
 };
 
 export const postToJSON = (doc: DocumentSnapshot<PostFirestore>): PostJSON => {
