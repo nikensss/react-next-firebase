@@ -9,7 +9,8 @@ export interface GetServerSidePropsProps {
 export const getServerSideProps = async ({ query: { username } }: GetServerSidePropsProps) => {
   const userDoc = await getUserWithUsername(username);
 
-  if (!userDoc) return { props: { user: null, posts: null } };
+  // tell next to 404
+  if (!userDoc) return { notFound: true };
 
   const user = userDoc.data();
   const posts = await getUserPosts(userDoc);

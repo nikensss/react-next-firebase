@@ -57,7 +57,7 @@ const PostPage = ({ post, path }: Awaited<ReturnType<typeof getStaticProps>>['pr
 
       <aside className="card">
         <p>
-          <strong>{post?.heartCount || 0} ❤️</strong>
+          <strong>{post?.heartCount || 0} 💜</strong>
         </p>
       </aside>
     </main>
