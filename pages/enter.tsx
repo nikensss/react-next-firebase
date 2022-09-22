@@ -5,6 +5,7 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import { UserContext } from '../lib/context';
 import { doc, getDoc, writeBatch } from 'firebase/firestore';
 import debounce from 'lodash.debounce';
+import { MetaTags } from '../components/Metatags';
 
 const EnterPage = () => {
   const { user, username } = useContext(UserContext);
@@ -12,7 +13,12 @@ const EnterPage = () => {
   // 1. user signed out -> <SignInButton />
   // 2. user signed in, but missing username -> <UsernameForm />
   // 3. user signed in, has username -> <SignOutButton />
-  return <main>{!user ? <SignInButton /> : username ? <SignOutButton /> : <UsernameForm />}</main>;
+  return (
+    <main>
+      <MetaTags title="Enter" description="Sign up for this amazing app!"></MetaTags>
+      {!user ? <SignInButton /> : username ? <SignOutButton /> : <UsernameForm />}
+    </main>
+  );
 };
 
 export default EnterPage;

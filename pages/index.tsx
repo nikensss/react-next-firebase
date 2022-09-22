@@ -11,6 +11,7 @@ import {
 } from 'firebase/firestore';
 import { useState } from 'react';
 import { Loader } from '../components/Loader';
+import { MetaTags } from '../components/Metatags';
 import PostFeed, { PostFirestore } from '../components/PostFeed';
 import { db, postToJSON } from '../lib/firebase';
 
@@ -62,6 +63,7 @@ const Home = ({ posts: _posts }: Awaited<ReturnType<typeof getServerSideProps>>[
   };
   return (
     <main>
+      <MetaTags title="Home page" description="Get the latest posts on our site"></MetaTags>
       <PostFeed posts={posts}></PostFeed>
 
       {!loading && !postsEnd && <button onClick={getMorePosts}>Load more</button>}

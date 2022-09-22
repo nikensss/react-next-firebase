@@ -3,6 +3,7 @@ import { db, getPost, getPostPath, getUserWithUsername } from '../../lib/firebas
 import { useDocumentData } from 'react-firebase-hooks/firestore';
 import { PostContent } from '../../components/PostContent';
 import { PostFirestore } from '../../components/PostFeed';
+import { MetaTags } from '../../components/Metatags';
 
 export type GetStaticPropsProps = {
   params: Record<string, string>;
@@ -51,6 +52,7 @@ const PostPage = ({ post, path }: Awaited<ReturnType<typeof getStaticProps>>['pr
 
   return (
     <main>
+      <MetaTags title={realtimePost?.title} description={realtimePost?.title}></MetaTags>
       <section>
         <PostContent post={realtimePost || post} />
       </section>

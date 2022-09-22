@@ -1,3 +1,4 @@
+import { MetaTags } from '../../components/Metatags';
 import PostFeed, { PostJSON } from '../../components/PostFeed';
 import { User, UserProfile } from '../../components/UserProfile';
 import { getUserPosts, getUserWithUsername } from '../../lib/firebase';
@@ -26,6 +27,7 @@ export interface UserProfilePageProps {
 const UserProfilePage = ({ user, posts }: UserProfilePageProps) => {
   return (
     <main>
+      <MetaTags title={user.username} description={`${user.username}'s public profile'`}></MetaTags>
       <UserProfile user={user} />
       <PostFeed posts={posts} admin={false} />
     </main>
